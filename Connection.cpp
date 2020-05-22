@@ -28,30 +28,32 @@ Connection::Connection(int maxinum,int listenPort)
     if(status == -1)
         perror("listen failed\n");
 
-    //initThreadPool(maxinum,request_handler);
+    this->sockNum = *socketNumber;
+    this->maxNum = maxinum;
+    
+}
 
+void Connection::Start()
+{
+    initThreadPool(maxNum);
+    printf("Thead Pool init\n");
     while (1) 
     {
-
-        int client_socket = accept(*socketNumber, NULL, NULL);
+        int client_socket = accept(sockNum, NULL, NULL);
         printf("Accept client\n");
-        if(client_socket < 0) {
-        perror("Failed to accept connection\n");
-        continue;
+        if(client_socket < 0) 
+        {
+            perror("Failed to accept connection\n");
+            continue;
         }
-        printf("pushing to work_queue");
+        printf("pushing to work_queue\n");
         pthread_mutex_lock(&wqMutex);
         workQueue.push(client_socket);
         pthread_cond_signal(&wqCond);
         pthread_mutex_unlock(&wqMutex);
   }
+}
 
-    
-}
-void* request_handler(void * addr)
-{
-    
-}
 
 
 void Connection::initThreadPool(int maxinum)
@@ -60,21 +62,22 @@ void Connection::initThreadPool(int maxinum)
     pthread_cond_init(&wqCond,NULL);
     for(int i=0;i<maxinum;i++)
     {
-        auto newThread = new(pthread_t);
-        pthread_create(newThread,NULL, request_handler, NULL);  
+        thread* newThread = new thread(ServeFunction,this);  
         threadPool.push_back(newThread); 
     }
    
 }
 
-int Connection::Serve()
+int Connection::getNext()
 {
     int clientSocket;
+    printf("Getting Next\n");
     pthread_mutex_lock(&wqMutex);
     while(workQueue.size() == 0)
     {
         pthread_cond_wait(&wqCond,&wqMutex);
     }
+    printf("Get Next Finished\n");
     clientSocket = workQueue.front();
     workQueue.pop();
     pthread_mutex_unlock(&wqMutex);

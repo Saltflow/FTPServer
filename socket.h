@@ -5,11 +5,12 @@
 #include <unistd.h>
 
 class Socket{
-    int sockNum;
+
     bool isServer;
 
 public:
     Socket();
+    void* request_handler(void *);
 
     void Serve(int server_port);
 

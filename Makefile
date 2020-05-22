@@ -1,16 +1,22 @@
 CC=g++
 CFLAGS=-c -Wall -g
-LDFLAGS=-pthread
-SOURCES=main.cpp Connection.cpp
+MYSSQLC=$(shell mysql_config --cflags)
+LIBS = $(shell mysql_config --libs)
+LDFLAGS=-pthread 
+SOURCES=main.cpp Connection.cpp database.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=FTPServer
 
 
-all: $(SOURCES) $(EXECUTABLE)
+all:     
+	$(SOURCES)  $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(LDFLAGS) $(CFLAGS) $(MYSSQLC) $(LIBS)  $(OBJECTS) -o $@
 
 
 clean:
 	rm -f $(EXECUTABLE) $(OBJECTS)
+
+start:
+	sudo ./FTPServer
