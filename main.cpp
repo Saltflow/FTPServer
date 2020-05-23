@@ -1,6 +1,7 @@
 #include"Connection.h"
 #include"database.h"
 #include"libftp.h"
+#include"fileserve.h"
 void Login(int socket);
 void Serv(int socket);
 char buffer[2048];
@@ -10,6 +11,7 @@ void handleRequest(Connection * conn)
     {
         int socket = conn->getNext();
         Login(socket);
+        Serv(socket);
     }   
 }
 
@@ -25,10 +27,36 @@ int main(int argc,char **argv)
 void Serv(int socket)
 {
     FTPCommand cmd = FTPCommand(socket);
+    FileDirectory RootDir = FileDirectory(".");
     while(true)
     {
-        cmd.Read();
+        if(!cmd.Read())
+        {
+            printf("Clilent closed\n");
+            return ;
+        }
+            
         string clientCmd = cmd.GetCommand();
+        string cmdCont = cmd.GetAttrib();
+        switch(clientCmd[0])
+        {
+            case 'R':
+                break;
+
+            case 'S':
+                if(clientCmd == "SIZE")
+                    break;
+            case 'L':
+                vector<string>* files = RootDir.List();
+                string outList = string("212 ");
+                for(unsigned i=0; i < files->size();i++)
+                {
+                    outList = outList + (*files)[i] + "\r";
+                }
+                outList = outList + "\n";
+                cmd.SendResponse(outList);
+                break;
+        }
     }
 }
 

@@ -6,9 +6,13 @@ FTPCommand::FTPCommand(int socket)
         this->sockNum = socket;
 }
 
-void FTPCommand::Read()
+bool FTPCommand::Read()
 {
     int readnum = read(sockNum,buffer,buffsize);
+    if(readnum == 0)
+    {
+        printf("socket closed!\n");
+    }
     buffer[readnum] = '\0';
     stringstream sstr(buffer);
     sstr >> command >> attrib;

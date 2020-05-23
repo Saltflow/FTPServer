@@ -3,7 +3,7 @@ CFLAGS= -Wall -g
 MYSSQLC=$(shell mysql_config --cflags)
 LIBS=$(shell mysql_config --libs)
 LDFLAGS=-pthread 
-SOURCES=main.cpp Connection.cpp database.cpp libftp.cpp
+SOURCES=main.cpp Connection.cpp database.cpp libftp.cpp fileserve.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=FTPServer
 

@@ -5,7 +5,6 @@
 #include <pthread.h>
 #include <signal.h>
 #include <arpa/inet.h>
-#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -40,7 +39,6 @@ public:
     void Start();
     void (*ServeFunction)(Connection* n);
     int getNext();
-
 };
 
 

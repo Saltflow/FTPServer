@@ -18,7 +18,7 @@ class FTPCommand{
 
         string GetCommand();
 
-        void Read();
+        bool Read();
 
         string GetAttrib();
 
