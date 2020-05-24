@@ -8,6 +8,10 @@ OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=FTPServer
 
 
+runandexe:
+	make tp
+	make start
+
 all:     
 	$(SOURCES)  $(EXECUTABLE)
 

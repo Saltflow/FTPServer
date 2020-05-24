@@ -1,17 +1,13 @@
-#include"Connection.h"
-#include"database.h"
-#include"libftp.h"
-#include"fileserve.h"
-void Login(int socket);
-void Serv(int socket);
+#include"main.h"
+
 char buffer[2048];
 void handleRequest(Connection * conn)
 {
     while(true)
     {
         int socket = conn->getNext();
-        Login(socket);
-        Serv(socket);
+        if(Login(socket))
+            Serv(socket);
     }   
 }
 
@@ -46,7 +42,15 @@ void Serv(int socket)
             case 'S':
                 if(clientCmd == "SIZE")
                     break;
+                if(clientCmd == "STOR")
+                {
+                    RootDir.HandleUpload(cmdCont);
+                    printf("Upload success!\n");
+                    cmd.SendResponse("200 success");
+                    break;
+                }
             case 'L':
+                printf("Listing");
                 vector<string>* files = RootDir.List();
                 string outList = string("212 ");
                 for(unsigned i=0; i < files->size();i++)
@@ -61,8 +65,10 @@ void Serv(int socket)
 }
 
 
-void Login(int socket)
+bool Login(int socket)
 {
+    //looping until we get a correct UserID and password
+
     FTPCommand login = FTPCommand(socket);
     login.Read();
     string usrCmd = login.GetCommand();
@@ -71,7 +77,7 @@ void Login(int socket)
     string usrName = login.GetAttrib();
     printf("get Attribute of userName %s \n",usrName.c_str());
     if(!DataBase::GetInstance() -> checkUserNameOK(usrName))
-        return ;
+        return false;
     login.SendResponse("331 password required\n");
 
     login.Read();
@@ -83,5 +89,7 @@ void Login(int socket)
     {
         printf("Validate Success\n");
         login.SendResponse("230 login success\n");
+        return true;
     }
+    return false;
 }

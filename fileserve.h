@@ -11,6 +11,7 @@
 using std::vector;
 using std::string;
 using std::ifstream;
+using std::ofstream;
 
 class FileDirectory
 {
@@ -19,6 +20,7 @@ class FileDirectory
 
 public:
     FileDirectory(string path);
+    void HandleUpload(string fileName);
 
 
     vector<string>* List()
@@ -30,6 +32,5 @@ public:
 
 };
 
-void OpenFileTransferSocket(string path);
 
 #endif

@@ -37,8 +37,13 @@ class Connection
 public:
     Connection(int maxinum,int listenPort);
     void Start();
+    int StartSingle();
     void (*ServeFunction)(Connection* n);
     int getNext();
+    ~Connection()
+    {
+        close(sockNum);
+    }
 };
 
 

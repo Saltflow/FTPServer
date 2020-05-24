@@ -1,6 +1,7 @@
 #include"fileserve.h"
 #include"libftp.h"
 #include"Connection.h"
+static char buffer[4096];
 
 FileDirectory::FileDirectory(string path)
 {
@@ -9,7 +10,6 @@ FileDirectory::FileDirectory(string path)
     DIR* dir;
     struct dirent *mdirent;
     dir = opendir(path.c_str());
-    char* offset = buffer;
     string prefix = (path == "."? "" : path+"/");
     while((mdirent = readdir(dir) ) != NULL)
     {
@@ -20,13 +20,28 @@ FileDirectory::FileDirectory(string path)
     }
 }
 
-void OpenFileTransferSocket(string path)
+
+
+void FileDirectory::HandleUpload(string fileName)
 {
-    ifstream f(path,ios::binary);
-    if(!f)
+    printf("Starting handle file Upload\n");
+    Connection *fileConn = new Connection(1,20);
+    printf("Connection success\n");
+    ofstream file(fileName,ios::binary); 
+    if(!file)
     {
         cout<< "failed loading files"<<endl;
         return ;
     }
-    Connection
+    printf("openning file success\n");
+    int clientSocket = fileConn->StartSingle();
+    int readnum;
+    printf("client socket %d\n");
+    while(readnum = read(clientSocket,buffer,4096))
+    {
+        file.write(buffer,readnum);
+    }
+    file.close();
+    delete(fileConn);
+
 }

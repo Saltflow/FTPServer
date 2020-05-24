@@ -12,11 +12,13 @@ bool FTPCommand::Read()
     if(readnum == 0)
     {
         printf("socket closed!\n");
+        return false;
     }
     buffer[readnum] = '\0';
     stringstream sstr(buffer);
     sstr >> command >> attrib;
     cout <<"get command " << command << " with attribute " << attrib << endl;
+    return true;
 }
 
 string FTPCommand::GetCommand()

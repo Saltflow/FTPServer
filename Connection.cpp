@@ -30,8 +30,11 @@ Connection::Connection(int maxinum,int listenPort)
 
     this->sockNum = *socketNumber;
     this->maxNum = maxinum;
+    printf("establish listen at port %d\n",listenPort);
     
 }
+
+
 
 void Connection::Start()
 {
@@ -52,6 +55,13 @@ void Connection::Start()
         pthread_cond_signal(&wqCond);
         pthread_mutex_unlock(&wqMutex);
   }
+}
+
+int Connection::StartSingle()
+{
+    int client_socket = accept(sockNum,NULL,NULL);
+    printf("accept client socket at %d",client_socket);
+    return client_socket;
 }
 
 
