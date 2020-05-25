@@ -73,14 +73,14 @@ void FileServer::HandleDownload(string fileName)
      struct stat file_stat;
     int stat_status = stat(fileName.c_str(), &file_stat);
     int fsize = file_stat.st_size;
-    while(fsize)
+    while(fsize >0)
     {
         int osize = fsize>4096? 4096:fsize;
         file.read(buffer,osize);
         write(socket,buffer,osize);
-        fsize -=4096;
+        fsize -=osize;
     }
-    
+    printf("finished sending files");
 
     
 }

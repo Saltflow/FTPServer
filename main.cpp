@@ -79,7 +79,6 @@ void Serv(int cmdSocket)
                 }
                 if(clientCmd == "STOR")
                 {
-                    
                     RootDir.HandleUpload(cmdCont,psize);
                     printf("Upload success!\n");
                     cmd.SendResponse(200);
