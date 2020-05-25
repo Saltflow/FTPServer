@@ -23,7 +23,9 @@ class FileServer
 
 public:
     FileServer(string path,int socket);
-    void HandleUpload(string fileName);
+
+    void HandleUpload(string fileName,int psize);
+    void HandleList();
 
 
     vector<string>* List()

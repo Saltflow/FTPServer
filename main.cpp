@@ -39,6 +39,7 @@ void Serv(int cmdSocket)
 
 
     FileServer RootDir = FileServer(".",dataSocket);
+    int psize;
     while(true)
     {
         if(!cmd.Read())
@@ -56,24 +57,34 @@ void Serv(int cmdSocket)
 
             case 'S':
                 if(clientCmd == "SIZE")
-                    break;
+                {
+                    //get size
+                    if(cmdCont[0] < '0' && cmdCont[0] > '9')
+                    {
+                        
+                    }
+                    //set size
+                    else
+                    {
+                        int size;
+                        sscanf(cmdCont.c_str(),"%d",&size);
+                        psize = size;
+                        cmd.SendResponse(200);
+                    }
+                    
+                }
                 if(clientCmd == "STOR")
                 {
-                    RootDir.HandleUpload(cmdCont);
+                    
+                    RootDir.HandleUpload(cmdCont,psize);
                     printf("Upload success!\n");
-                    cmd.SendResponse("200 success");
+                    cmd.SendResponse(200);
                     break;
                 }
             case 'L':
                 printf("Listing");
-                vector<string>* files = RootDir.List();
-                string outList = string("212 ");
-                for(unsigned i=0; i < files->size();i++)
-                {
-                    outList = outList + (*files)[i] + "\r";
-                }
-                outList = outList + "\n";
-                cmd.SendResponse(outList);
+                RootDir.HandleList();
+                cmd.SendResponse(200);
                 break;
         }
     }
@@ -88,7 +99,7 @@ bool Login(int socket)
     login.Read();
     string usrCmd = login.GetCommand();
     if(usrCmd != string("USER"))
-        login.SendResponse("404\n");
+        login.SendResponse(404);
     string usrName = login.GetAttrib();
     printf("get Attribute of userName %s \n",usrName.c_str());
     if(!DataBase::GetInstance() -> checkUserNameOK(usrName))
@@ -98,12 +109,12 @@ bool Login(int socket)
     login.Read();
     usrCmd = login.GetCommand();
     if(usrCmd != string("PASS"))
-        login.SendResponse("404\n");
+        login.SendResponse(404);
     string userPass = login.GetAttrib();
     if(DataBase::GetInstance() -> checkPassWordOK(usrName,userPass))
     {
         printf("Validate Success\n");
-        login.SendResponse("230 login success\n");
+        login.SendResponse(230);
         return true;
     }
     return false;

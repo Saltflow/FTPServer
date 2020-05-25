@@ -24,6 +24,8 @@ class FTPCommand{
 
         void SendResponse(string command);
 
+        void SendResponse(int code);
+
 };
 
 
