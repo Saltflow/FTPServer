@@ -2,11 +2,10 @@
 #include"libftp.h"
 #include"Connection.h"
 static char buffer[4096];
-
-FileDirectory::FileDirectory(string path)
+FileServer::FileServer(string path,int socket)
 {
+    this->socket = socket;
     char buffer[2048];
-    currentPath = path;
     DIR* dir;
     struct dirent *mdirent;
     dir = opendir(path.c_str());
@@ -22,10 +21,10 @@ FileDirectory::FileDirectory(string path)
 
 
 
-void FileDirectory::HandleUpload(string fileName)
+void FileServer::HandleUpload(string fileName)
 {
     printf("Starting handle file Upload\n");
-    Connection *fileConn = new Connection(1,20);
+
     printf("Connection success\n");
     ofstream file(fileName,ios::binary); 
     if(!file)
@@ -34,14 +33,12 @@ void FileDirectory::HandleUpload(string fileName)
         return ;
     }
     printf("openning file success\n");
-    int clientSocket = fileConn->StartSingle();
     int readnum;
     printf("client socket %d\n");
-    while(readnum = read(clientSocket,buffer,4096))
+    while(readnum = read(socket,buffer,4096))
     {
         file.write(buffer,readnum);
     }
     file.close();
-    delete(fileConn);
 
 }

@@ -1,6 +1,54 @@
 
 #include"Connection.h"
 
+static int lastFreePort = 1050;
+
+struct sockaddr_in getServeAddress(int port)
+{
+    struct sockaddr_in serv_address;
+    memset(&serv_address,0,sizeof(serv_address));
+    serv_address.sin_family = AF_INET;
+    serv_address.sin_port = htons(port);
+    serv_address.sin_addr.s_addr = INADDR_ANY;
+    return serv_address;
+}
+
+int Connection::getFreeDataPort(int *socketNumber)
+{
+    while(true)
+    {
+        lastFreePort++;
+        int status;
+        *socketNumber = socket(AF_INET,SOCK_STREAM,0);
+
+        int socket_option = 1;
+        if (setsockopt(*socketNumber, SOL_SOCKET, SO_REUSEADDR, &socket_option,
+            sizeof(socket_option)) == -1) 
+        {
+            perror("Failed to set socket options");
+            exit(errno);
+        }
+
+        struct sockaddr_in serv_address = getServeAddress(lastFreePort);
+
+
+        status = bind(*socketNumber, (struct sockaddr *) &serv_address,sizeof(serv_address));
+        if(status == -1)
+        {
+            perror("bind failed\n");
+            continue;
+        }
+        status = listen(*socketNumber, 50);
+        if(status == -1)
+        {
+            perror("listen failed\n");
+            continue;
+        }
+    }
+    return lastFreePort;
+
+}
+
 Connection::Connection(int maxinum,int listenPort)
 {
     int status;
@@ -15,11 +63,7 @@ Connection::Connection(int maxinum,int listenPort)
         exit(errno);
     }
 
-    struct sockaddr_in serv_address;
-    memset(&serv_address,0,sizeof(serv_address));
-    serv_address.sin_family = AF_INET;
-    serv_address.sin_port = htons(listenPort);
-    serv_address.sin_addr.s_addr = INADDR_ANY;
+    struct sockaddr_in serv_address =  getServeAddress(21);
 
     status = bind(*socketNumber, (struct sockaddr *) &serv_address,sizeof(serv_address));
     if(status == -1)
@@ -57,9 +101,9 @@ void Connection::Start()
   }
 }
 
-int Connection::StartSingle()
+int Connection::StartSingle(int listenSocket)
 {
-    int client_socket = accept(sockNum,NULL,NULL);
+    int client_socket = accept(listenSocket,NULL,NULL);
     printf("accept client socket at %d",client_socket);
     return client_socket;
 }

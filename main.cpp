@@ -7,7 +7,9 @@ void handleRequest(Connection * conn)
     {
         int socket = conn->getNext();
         if(Login(socket))
+        {
             Serv(socket);
+        }
     }   
 }
 
@@ -20,10 +22,22 @@ int main(int argc,char **argv)
     return 0;
 }
 
-void Serv(int socket)
+void Serv(int cmdSocket)
 {
-    FTPCommand cmd = FTPCommand(socket);
-    FileDirectory RootDir = FileDirectory(".");
+    FTPCommand cmd = FTPCommand(cmdSocket);
+    //PASV
+    cmd.Read();
+    int dataSocket;
+    int dataPort = Connection::getFreeDataPort(&dataSocket);
+
+    char dataPort_s[256];
+    sprintf(dataPort_s,"%d\n",dataPort);
+    cmd.SendResponse(string("227 Entering PASV mode ")+ string(dataPort_s));
+
+    dataSocket = Connection::StartSingle(dataSocket);
+
+
+    FileServer RootDir = FileServer(".",dataSocket);
     while(true)
     {
         if(!cmd.Read())

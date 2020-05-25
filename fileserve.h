@@ -13,13 +13,16 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 
-class FileDirectory
+
+class FileServer
 {
     vector<string> filePaths;
+    int socket;
     string currentPath;
+    string usrName;
 
 public:
-    FileDirectory(string path);
+    FileServer(string path,int socket);
     void HandleUpload(string fileName);
 
 
@@ -31,6 +34,7 @@ public:
     
 
 };
+
 
 
 #endif

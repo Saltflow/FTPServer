@@ -35,9 +35,10 @@ class Connection
 
 
 public:
+    static int getFreeDataPort(int *socketNumber);
+    static int StartSingle(int listenSocket);
     Connection(int maxinum,int listenPort);
     void Start();
-    int StartSingle();
     void (*ServeFunction)(Connection* n);
     int getNext();
     ~Connection()
