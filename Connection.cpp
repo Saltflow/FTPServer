@@ -17,7 +17,10 @@ int Connection::getFreeDataPort(int *socketNumber)
 {
     while(true)
     {
+        printf("trying %d\n",lastFreePort);
         lastFreePort++;
+        if(lastFreePort > 60000)
+            lastFreePort = 1050;
         int status;
         *socketNumber = socket(AF_INET,SOCK_STREAM,0);
 
@@ -44,8 +47,8 @@ int Connection::getFreeDataPort(int *socketNumber)
             perror("listen failed\n");
             continue;
         }
+        return lastFreePort;
     }
-    return lastFreePort;
 
 }
 

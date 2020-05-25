@@ -35,6 +35,7 @@ void Serv(int cmdSocket)
     cmd.SendResponse(string("227 Entering PASV mode ")+ string(dataPort_s));
 
     dataSocket = Connection::StartSingle(dataSocket);
+    printf("data connection finished with dataSocket\n");
 
 
     FileServer RootDir = FileServer(".",dataSocket);

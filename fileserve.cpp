@@ -33,8 +33,8 @@ void FileServer::HandleUpload(string fileName)
         return ;
     }
     printf("openning file success\n");
-    int readnum;
-    printf("client socket %d\n");
+    int readnum,packnum = 0;
+    printf("client socket %d\n",socket);
     while(readnum = read(socket,buffer,4096))
     {
         file.write(buffer,readnum);
