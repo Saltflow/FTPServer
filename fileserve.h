@@ -16,7 +16,6 @@ using std::ofstream;
 
 class FileServer
 {
-    vector<string> filePaths;
     int socket;
     string currentPath;
     string usrName;
@@ -25,13 +24,10 @@ public:
     FileServer(string path,int socket);
 
     void HandleUpload(string fileName,int psize);
+    void HandleDownload(string fileName);
     void HandleList();
+    void HandleSize(string fileName);
 
-
-    vector<string>* List()
-    {
-        return &this->filePaths;
-    }
 
     
 

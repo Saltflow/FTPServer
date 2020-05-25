@@ -53,15 +53,19 @@ void Serv(int cmdSocket)
         switch(clientCmd[0])
         {
             case 'R':
+                RootDir.HandleDownload(cmdCont);
+                cmd.SendResponse(200);
                 break;
 
             case 'S':
                 if(clientCmd == "SIZE")
                 {
                     //get size
-                    if(cmdCont[0] < '0' && cmdCont[0] > '9')
+                    if(cmdCont[0] < '0' || cmdCont[0] > '9')
                     {
-                        
+                        printf("Handling asking size\n");
+                        RootDir.HandleSize(cmdCont);
+                        cmd.SendResponse(200);
                     }
                     //set size
                     else
@@ -79,8 +83,8 @@ void Serv(int cmdSocket)
                     RootDir.HandleUpload(cmdCont,psize);
                     printf("Upload success!\n");
                     cmd.SendResponse(200);
-                    break;
                 }
+                break;
             case 'L':
                 printf("Listing");
                 RootDir.HandleList();
