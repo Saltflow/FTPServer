@@ -89,6 +89,11 @@ void Serv(int cmdSocket)
                 RootDir.HandleList();
                 cmd.SendResponse(200);
                 break;
+            case 'C': //CWD
+                if(RootDir.HandleCWD(cmdCont))
+                    cmd.SendResponse(200);
+                else
+                    cmd.SendResponse(404);
         }
     }
 }

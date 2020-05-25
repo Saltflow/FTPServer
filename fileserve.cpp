@@ -96,8 +96,24 @@ void FileServer::HandleSize(string fileName)
         return ;
     }
     memset(buffer,0,4096);
-    sprintf(buffer,"%d",file_stat.st_size);
+    sprintf(buffer,"%d\n",file_stat.st_size);
     printf("get buffer size %s\n",buffer);
-    write(socket,buffer,sizeof(int));
+    write(socket,buffer,strlen(buffer));
     printf("size success\n");
+}
+
+bool FileServer::HandleCWD(string Directory)
+{
+    struct stat file_stat;
+    int stat_status = stat(Directory.c_str(), &file_stat);
+    if(stat_status != 0)
+    {
+        printf("Dir not found \n");
+        return false;
+    }
+    if(S_ISDIR(file_stat.st_mode))
+    {
+        this->currentPath = Directory;
+        return true;
+    }
 }

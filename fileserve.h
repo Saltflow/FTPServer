@@ -27,6 +27,7 @@ public:
     void HandleDownload(string fileName);
     void HandleList();
     void HandleSize(string fileName);
+    bool HandleCWD(string Directory);
 
 
     
