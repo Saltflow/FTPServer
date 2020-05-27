@@ -24,6 +24,8 @@ public:
     FileServer(string path,int socket);
 
     void HandleUpload(string fileName,long long psize);
+    void HandleUpload(string fileName,long long psize, int currPacket);
+    void HandleDownload(string fileName,long long currPacket);
     void HandleDownload(string fileName);
     void HandleList();
     void HandleSize(string fileName);
