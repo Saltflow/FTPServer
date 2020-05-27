@@ -39,7 +39,7 @@ void FileServer::HandleUpload(string fileName,long long psize)
     char buffer[4096];
     printf("Starting handle file Upload\n");
 
-    ofstream file(fileName,ios::binary); 
+    ofstream file(fileName,ios::binary,ios::app); 
     if(!file)
     {
         cout<< "failed loading files"<<endl;
@@ -50,6 +50,11 @@ void FileServer::HandleUpload(string fileName,long long psize)
     printf("client socket %d\n",socket);
     while(readnum = read(socket,buffer,4096))
     {
+        if(readnum == -1)
+        {
+            printf("connection terminated\n");
+            file.close();
+        }
         file.write(buffer,readnum);
         packnum += readnum;
         if(packnum == psize)
@@ -73,13 +78,14 @@ void FileServer::HandleDownload(string fileName)
      struct stat file_stat;
     int stat_status = stat(fileName.c_str(), &file_stat);
     int fsize = file_stat.st_size;
-    while(fsize >0)
+    while(fsize >0 && write != -1)
     {
         int osize = fsize>4096? 4096:fsize;
         file.read(buffer,osize);
         write(socket,buffer,osize);
         fsize -=osize;
     }
+    file.close();
     printf("finished sending files");
 
     
