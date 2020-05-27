@@ -39,7 +39,7 @@ void Serv(int cmdSocket)
 
 
     FileServer RootDir = FileServer(".",dataSocket);
-    int psize;
+    long long psize;
     while(true)
     {
         if(!cmd.Read())
@@ -70,8 +70,8 @@ void Serv(int cmdSocket)
                     //set size
                     else
                     {
-                        int size;
-                        sscanf(cmdCont.c_str(),"%d",&size);
+                        long long size;
+                        sscanf(cmdCont.c_str(),"%lld",&size);
                         psize = size;
                         cmd.SendResponse(200);
                     }

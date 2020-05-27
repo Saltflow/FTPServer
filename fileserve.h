@@ -23,7 +23,7 @@ class FileServer
 public:
     FileServer(string path,int socket);
 
-    void HandleUpload(string fileName,int psize);
+    void HandleUpload(string fileName,long long psize);
     void HandleDownload(string fileName);
     void HandleList();
     void HandleSize(string fileName);

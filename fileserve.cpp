@@ -34,7 +34,7 @@ void FileServer::HandleList()
 }
 
 
-void FileServer::HandleUpload(string fileName,int psize)
+void FileServer::HandleUpload(string fileName,long long psize)
 {
     char buffer[4096];
     printf("Starting handle file Upload\n");
@@ -51,7 +51,7 @@ void FileServer::HandleUpload(string fileName,int psize)
     while(readnum = read(socket,buffer,4096))
     {
         file.write(buffer,readnum);
-        packnum++;
+        packnum += readnum;
         if(packnum == psize)
             break;
     }
