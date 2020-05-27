@@ -39,7 +39,7 @@ void FileServer::HandleUpload(string fileName,long long psize)
     char buffer[4096];
     printf("Starting handle file Upload\n");
 
-    ofstream file(fileName,ios::binary,ios::app); 
+    ofstream file(fileName,ios::binary); 
     if(!file)
     {
         cout<< "failed loading files"<<endl;
@@ -78,7 +78,7 @@ void FileServer::HandleDownload(string fileName)
      struct stat file_stat;
     int stat_status = stat(fileName.c_str(), &file_stat);
     int fsize = file_stat.st_size;
-    while(fsize >0 && write != -1)
+    while(fsize >0 )
     {
         int osize = fsize>4096? 4096:fsize;
         file.read(buffer,osize);
