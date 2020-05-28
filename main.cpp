@@ -53,10 +53,24 @@ void Serv(int cmdSocket)
         switch(clientCmd[0])
         {
             case 'R':
+            if(clientCmd == "RETR")
+            {
                 RootDir.HandleDownload(cmdCont);
                 cmd.SendResponse(200);
                 break;
+            }
+            if(clientCmd == "RSTOR")
+            {
+                string fileName = cmd.GetAttrib();
+                cmd.SendResponse(200);
+                cmd.Read();
+                int packnum;
+                sscanf(cmdCont.c_str(),"%d",&packnum);
+                RootDir.HandleUpload(fileName,psize,packnum);
+                cmd.SendResponse(200);
+                break;
 
+            }
             case 'S':
                 if(clientCmd == "SIZE")
                 {

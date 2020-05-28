@@ -33,6 +33,36 @@ void FileServer::HandleList()
 
 }
 
+void FileServer::HandleUpload(string fileName,long long psize, int currPacket)
+{
+    char buffer[4096];
+    printf("Starting handle file reUpload\n");
+
+    ofstream file(fileName,ios::app); 
+    if(!file)
+    {
+        cout<< "failed loading files"<<endl;
+        return ;
+    }
+    printf("openning file success\n");
+    int readnum,packnum = 0;
+
+    printf("client socket %d\n",socket);
+    while(readnum = read(socket,buffer,4096))
+    {
+        if(readnum == -1)
+        {
+            printf("connection terminated\n");
+            file.close();
+        }
+        file.write(buffer,readnum);
+        packnum += readnum;
+        if(packnum == psize)
+            break;
+    }
+    file.close();
+}
+
 
 void FileServer::HandleUpload(string fileName,long long psize)
 {
@@ -76,7 +106,7 @@ void FileServer::HandleDownload(string fileName)
     }
     printf("openning file success\n");
      struct stat file_stat;
-    int stat_status = stat(fileName.c_str(), &file_stat);
+    stat(fileName.c_str(), &file_stat);
     int fsize = file_stat.st_size;
     while(fsize >0 )
     {
